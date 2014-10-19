@@ -1,0 +1,2385 @@
+@prefix lv2:  <http://lv2plug.in/ns/lv2core#>.
+@prefix doap: <http://usefulinc.com/ns/doap#>.
+@prefix pg: <http://ll-plugins.nongnu.org/lv2/ext/portgroup#>.
+@prefix ll: <http://ll-plugins.nongnu.org/lv2/namespace#>.
+@prefix ev: <http://lv2plug.in/ns/ext/event#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix guiext: <http://lv2plug.in/ns/extensions/ui#>.
+@prefix epp: <http://lv2plug.in/ns/ext/port-props#>.
+@prefix atom: <http://lv2plug.in/ns/ext/atom#>.
+@prefix urid: <http://lv2plug.in/ns/ext/urid#>.
+
+<git://github.com/Themaister#me>
+  a foaf:Person;
+  foaf:name "Hans-Kristian Arntzen";
+  foaf:mbox <mailto:maister@archlinux.us>;
+  foaf:homepage <http://themaister.net/>.
+
+<git://github.com/Themaister/fmsynth/gui>
+  a guiext:GtkUI;
+  guiext:binary <fmsynth_gui.so>;
+  guiext:requiredFeature guiext:makeResident.
+
+<git://github.com/Themaister/fmsynth/out> a pg:StereoGroup.
+
+<git://github.com/Themaister/fmsynth>
+  a lv2:Plugin, lv2:InstrumentPlugin;
+  lv2:binary <fmsynth.so>;
+  lv2:optionalFeature lv2:hardRTCapable;
+  lv2:requiredFeature urid:map;
+  doap:name "FM Synth";
+  doap:license <http://usefulinc.com/doap/licenses/gpl>;
+  doap:shortdesc "FM Synthesizer";
+  doap:maintainer <git://github.com/Themaister#me>;
+  ll:pegName "peg";
+  guiext:ui <git://github.com/Themaister/fmsynth/gui>;
+
+  lv2:port [
+    a lv2:AudioPort, lv2:OutputPort;
+    lv2:index 0;
+    lv2:symbol "output_left";
+    lv2:name "Left Output";
+    pg:membership [
+      pg:group <git://github.com/Themaister/fmsynth/out>;
+      pg:role pg:leftChannel;
+    ];
+  ],
+
+  [
+    a lv2:AudioPort, lv2:OutputPort;
+    lv2:index 1;
+    lv2:symbol "output_right";
+    lv2:name "Right Output";
+    pg:membership [
+      pg:group <git://github.com/Themaister/fmsynth/out>;
+      pg:role pg:rightChannel;
+    ];
+  ],
+
+  [
+    a atom:AtomPort, lv2:InputPort;
+    lv2:index 2;
+    lv2:symbol "midi";
+    lv2:name "MIDI";
+    atom:bufferType atom:Sequence;
+    atom:supports <http://lv2plug.in/ns/ext/midi#MidiEvent>;
+  ],
+
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 3;
+    lv2:symbol "volume";
+    lv2:name "Volume";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.200000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 4;
+    lv2:symbol "lfofreq";
+    lv2:name "LFOFreq";
+    lv2:minimum 0.100000;
+    lv2:maximum 64.000000;
+    lv2:default 0.100000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 5;
+    lv2:symbol "amp__op__0_";
+    lv2:name "Amp (Op #0)";
+    lv2:minimum 0.005000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 6;
+    lv2:symbol "pan__op__0_";
+    lv2:name "Pan (Op #0)";
+    lv2:minimum -1.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 7;
+    lv2:symbol "freqmod__op__0_";
+    lv2:name "FreqMod (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 8;
+    lv2:symbol "freqoffset__op__0_";
+    lv2:name "FreqOffset (Op #0)";
+    lv2:minimum -128.000000;
+    lv2:maximum 128.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 9;
+    lv2:symbol "envelopetarget0__op__0_";
+    lv2:name "EnvelopeTarget0 (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 10;
+    lv2:symbol "envelopetarget1__op__0_";
+    lv2:name "EnvelopeTarget1 (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.500000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 11;
+    lv2:symbol "envelopetarget2__op__0_";
+    lv2:name "EnvelopeTarget2 (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.250000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 12;
+    lv2:symbol "envelopedelay0__op__0_";
+    lv2:name "EnvelopeDelay0 (Op #0)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 13;
+    lv2:symbol "envelopedelay1__op__0_";
+    lv2:name "EnvelopeDelay1 (Op #0)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 14;
+    lv2:symbol "envelopedelay2__op__0_";
+    lv2:name "EnvelopeDelay2 (Op #0)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.250000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 15;
+    lv2:symbol "envelopereleasetime__op__0_";
+    lv2:name "EnvelopeReleaseTime (Op #0)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.500000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 16;
+    lv2:symbol "keyboardscalingmidpoint__op__0_";
+    lv2:name "KeyboardScalingMidPoint (Op #0)";
+    lv2:minimum 50.000000;
+    lv2:maximum 5000.000000;
+    lv2:default 440.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 17;
+    lv2:symbol "keyboardscalinglowfactor__op__0_";
+    lv2:name "KeyboardScalingLowFactor (Op #0)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 18;
+    lv2:symbol "keyboardscalinghighfactor__op__0_";
+    lv2:name "KeyboardScalingHighFactor (Op #0)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 19;
+    lv2:symbol "velocitysensitivity__op__0_";
+    lv2:name "VelocitySensitivity (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 20;
+    lv2:symbol "modsensitivity__op__0_";
+    lv2:name "ModSensitivity (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 21;
+    lv2:symbol "lfoampdepth__op__0_";
+    lv2:name "LFOAmpDepth (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 22;
+    lv2:symbol "lfofreqmoddepth__op__0_";
+    lv2:name "LFOFreqModDepth (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 0.025000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 23;
+    lv2:symbol "enable__op__0_";
+    lv2:name "Enable (Op #0)";
+    lv2:minimum 0;
+    lv2:maximum 1;
+    lv2:default 1;
+    lv2:portProperty lv2:toggled;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 24;
+    lv2:symbol "carriers__op__0_";
+    lv2:name "Carriers (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 25;
+    lv2:symbol "mod0tooperator__op__0_";
+    lv2:name "Mod0ToOperator (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 26;
+    lv2:symbol "mod1tooperator__op__0_";
+    lv2:name "Mod1ToOperator (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 27;
+    lv2:symbol "mod2tooperator__op__0_";
+    lv2:name "Mod2ToOperator (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 28;
+    lv2:symbol "mod3tooperator__op__0_";
+    lv2:name "Mod3ToOperator (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 29;
+    lv2:symbol "mod4tooperator__op__0_";
+    lv2:name "Mod4ToOperator (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 30;
+    lv2:symbol "mod5tooperator__op__0_";
+    lv2:name "Mod5ToOperator (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 31;
+    lv2:symbol "mod6tooperator__op__0_";
+    lv2:name "Mod6ToOperator (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 32;
+    lv2:symbol "mod7tooperator__op__0_";
+    lv2:name "Mod7ToOperator (Op #0)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 33;
+    lv2:symbol "amp__op__1_";
+    lv2:name "Amp (Op #1)";
+    lv2:minimum 0.005000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 34;
+    lv2:symbol "pan__op__1_";
+    lv2:name "Pan (Op #1)";
+    lv2:minimum -1.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 35;
+    lv2:symbol "freqmod__op__1_";
+    lv2:name "FreqMod (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 36;
+    lv2:symbol "freqoffset__op__1_";
+    lv2:name "FreqOffset (Op #1)";
+    lv2:minimum -128.000000;
+    lv2:maximum 128.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 37;
+    lv2:symbol "envelopetarget0__op__1_";
+    lv2:name "EnvelopeTarget0 (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 38;
+    lv2:symbol "envelopetarget1__op__1_";
+    lv2:name "EnvelopeTarget1 (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.500000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 39;
+    lv2:symbol "envelopetarget2__op__1_";
+    lv2:name "EnvelopeTarget2 (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.250000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 40;
+    lv2:symbol "envelopedelay0__op__1_";
+    lv2:name "EnvelopeDelay0 (Op #1)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 41;
+    lv2:symbol "envelopedelay1__op__1_";
+    lv2:name "EnvelopeDelay1 (Op #1)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 42;
+    lv2:symbol "envelopedelay2__op__1_";
+    lv2:name "EnvelopeDelay2 (Op #1)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.250000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 43;
+    lv2:symbol "envelopereleasetime__op__1_";
+    lv2:name "EnvelopeReleaseTime (Op #1)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.500000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 44;
+    lv2:symbol "keyboardscalingmidpoint__op__1_";
+    lv2:name "KeyboardScalingMidPoint (Op #1)";
+    lv2:minimum 50.000000;
+    lv2:maximum 5000.000000;
+    lv2:default 440.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 45;
+    lv2:symbol "keyboardscalinglowfactor__op__1_";
+    lv2:name "KeyboardScalingLowFactor (Op #1)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 46;
+    lv2:symbol "keyboardscalinghighfactor__op__1_";
+    lv2:name "KeyboardScalingHighFactor (Op #1)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 47;
+    lv2:symbol "velocitysensitivity__op__1_";
+    lv2:name "VelocitySensitivity (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 48;
+    lv2:symbol "modsensitivity__op__1_";
+    lv2:name "ModSensitivity (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 49;
+    lv2:symbol "lfoampdepth__op__1_";
+    lv2:name "LFOAmpDepth (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 50;
+    lv2:symbol "lfofreqmoddepth__op__1_";
+    lv2:name "LFOFreqModDepth (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 0.025000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 51;
+    lv2:symbol "enable__op__1_";
+    lv2:name "Enable (Op #1)";
+    lv2:minimum 0;
+    lv2:maximum 1;
+    lv2:default 1;
+    lv2:portProperty lv2:toggled;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 52;
+    lv2:symbol "carriers__op__1_";
+    lv2:name "Carriers (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 53;
+    lv2:symbol "mod0tooperator__op__1_";
+    lv2:name "Mod0ToOperator (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 54;
+    lv2:symbol "mod1tooperator__op__1_";
+    lv2:name "Mod1ToOperator (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 55;
+    lv2:symbol "mod2tooperator__op__1_";
+    lv2:name "Mod2ToOperator (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 56;
+    lv2:symbol "mod3tooperator__op__1_";
+    lv2:name "Mod3ToOperator (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 57;
+    lv2:symbol "mod4tooperator__op__1_";
+    lv2:name "Mod4ToOperator (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 58;
+    lv2:symbol "mod5tooperator__op__1_";
+    lv2:name "Mod5ToOperator (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 59;
+    lv2:symbol "mod6tooperator__op__1_";
+    lv2:name "Mod6ToOperator (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 60;
+    lv2:symbol "mod7tooperator__op__1_";
+    lv2:name "Mod7ToOperator (Op #1)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 61;
+    lv2:symbol "amp__op__2_";
+    lv2:name "Amp (Op #2)";
+    lv2:minimum 0.005000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 62;
+    lv2:symbol "pan__op__2_";
+    lv2:name "Pan (Op #2)";
+    lv2:minimum -1.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 63;
+    lv2:symbol "freqmod__op__2_";
+    lv2:name "FreqMod (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 64;
+    lv2:symbol "freqoffset__op__2_";
+    lv2:name "FreqOffset (Op #2)";
+    lv2:minimum -128.000000;
+    lv2:maximum 128.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 65;
+    lv2:symbol "envelopetarget0__op__2_";
+    lv2:name "EnvelopeTarget0 (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 66;
+    lv2:symbol "envelopetarget1__op__2_";
+    lv2:name "EnvelopeTarget1 (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.500000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 67;
+    lv2:symbol "envelopetarget2__op__2_";
+    lv2:name "EnvelopeTarget2 (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.250000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 68;
+    lv2:symbol "envelopedelay0__op__2_";
+    lv2:name "EnvelopeDelay0 (Op #2)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 69;
+    lv2:symbol "envelopedelay1__op__2_";
+    lv2:name "EnvelopeDelay1 (Op #2)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 70;
+    lv2:symbol "envelopedelay2__op__2_";
+    lv2:name "EnvelopeDelay2 (Op #2)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.250000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 71;
+    lv2:symbol "envelopereleasetime__op__2_";
+    lv2:name "EnvelopeReleaseTime (Op #2)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.500000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 72;
+    lv2:symbol "keyboardscalingmidpoint__op__2_";
+    lv2:name "KeyboardScalingMidPoint (Op #2)";
+    lv2:minimum 50.000000;
+    lv2:maximum 5000.000000;
+    lv2:default 440.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 73;
+    lv2:symbol "keyboardscalinglowfactor__op__2_";
+    lv2:name "KeyboardScalingLowFactor (Op #2)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 74;
+    lv2:symbol "keyboardscalinghighfactor__op__2_";
+    lv2:name "KeyboardScalingHighFactor (Op #2)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 75;
+    lv2:symbol "velocitysensitivity__op__2_";
+    lv2:name "VelocitySensitivity (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 76;
+    lv2:symbol "modsensitivity__op__2_";
+    lv2:name "ModSensitivity (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 77;
+    lv2:symbol "lfoampdepth__op__2_";
+    lv2:name "LFOAmpDepth (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 78;
+    lv2:symbol "lfofreqmoddepth__op__2_";
+    lv2:name "LFOFreqModDepth (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 0.025000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 79;
+    lv2:symbol "enable__op__2_";
+    lv2:name "Enable (Op #2)";
+    lv2:minimum 0;
+    lv2:maximum 1;
+    lv2:default 1;
+    lv2:portProperty lv2:toggled;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 80;
+    lv2:symbol "carriers__op__2_";
+    lv2:name "Carriers (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 81;
+    lv2:symbol "mod0tooperator__op__2_";
+    lv2:name "Mod0ToOperator (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 82;
+    lv2:symbol "mod1tooperator__op__2_";
+    lv2:name "Mod1ToOperator (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 83;
+    lv2:symbol "mod2tooperator__op__2_";
+    lv2:name "Mod2ToOperator (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 84;
+    lv2:symbol "mod3tooperator__op__2_";
+    lv2:name "Mod3ToOperator (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 85;
+    lv2:symbol "mod4tooperator__op__2_";
+    lv2:name "Mod4ToOperator (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 86;
+    lv2:symbol "mod5tooperator__op__2_";
+    lv2:name "Mod5ToOperator (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 87;
+    lv2:symbol "mod6tooperator__op__2_";
+    lv2:name "Mod6ToOperator (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 88;
+    lv2:symbol "mod7tooperator__op__2_";
+    lv2:name "Mod7ToOperator (Op #2)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 89;
+    lv2:symbol "amp__op__3_";
+    lv2:name "Amp (Op #3)";
+    lv2:minimum 0.005000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 90;
+    lv2:symbol "pan__op__3_";
+    lv2:name "Pan (Op #3)";
+    lv2:minimum -1.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 91;
+    lv2:symbol "freqmod__op__3_";
+    lv2:name "FreqMod (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 92;
+    lv2:symbol "freqoffset__op__3_";
+    lv2:name "FreqOffset (Op #3)";
+    lv2:minimum -128.000000;
+    lv2:maximum 128.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 93;
+    lv2:symbol "envelopetarget0__op__3_";
+    lv2:name "EnvelopeTarget0 (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 94;
+    lv2:symbol "envelopetarget1__op__3_";
+    lv2:name "EnvelopeTarget1 (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.500000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 95;
+    lv2:symbol "envelopetarget2__op__3_";
+    lv2:name "EnvelopeTarget2 (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.250000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 96;
+    lv2:symbol "envelopedelay0__op__3_";
+    lv2:name "EnvelopeDelay0 (Op #3)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 97;
+    lv2:symbol "envelopedelay1__op__3_";
+    lv2:name "EnvelopeDelay1 (Op #3)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 98;
+    lv2:symbol "envelopedelay2__op__3_";
+    lv2:name "EnvelopeDelay2 (Op #3)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.250000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 99;
+    lv2:symbol "envelopereleasetime__op__3_";
+    lv2:name "EnvelopeReleaseTime (Op #3)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.500000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 100;
+    lv2:symbol "keyboardscalingmidpoint__op__3_";
+    lv2:name "KeyboardScalingMidPoint (Op #3)";
+    lv2:minimum 50.000000;
+    lv2:maximum 5000.000000;
+    lv2:default 440.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 101;
+    lv2:symbol "keyboardscalinglowfactor__op__3_";
+    lv2:name "KeyboardScalingLowFactor (Op #3)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 102;
+    lv2:symbol "keyboardscalinghighfactor__op__3_";
+    lv2:name "KeyboardScalingHighFactor (Op #3)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 103;
+    lv2:symbol "velocitysensitivity__op__3_";
+    lv2:name "VelocitySensitivity (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 104;
+    lv2:symbol "modsensitivity__op__3_";
+    lv2:name "ModSensitivity (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 105;
+    lv2:symbol "lfoampdepth__op__3_";
+    lv2:name "LFOAmpDepth (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 106;
+    lv2:symbol "lfofreqmoddepth__op__3_";
+    lv2:name "LFOFreqModDepth (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 0.025000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 107;
+    lv2:symbol "enable__op__3_";
+    lv2:name "Enable (Op #3)";
+    lv2:minimum 0;
+    lv2:maximum 1;
+    lv2:default 1;
+    lv2:portProperty lv2:toggled;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 108;
+    lv2:symbol "carriers__op__3_";
+    lv2:name "Carriers (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 109;
+    lv2:symbol "mod0tooperator__op__3_";
+    lv2:name "Mod0ToOperator (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 110;
+    lv2:symbol "mod1tooperator__op__3_";
+    lv2:name "Mod1ToOperator (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 111;
+    lv2:symbol "mod2tooperator__op__3_";
+    lv2:name "Mod2ToOperator (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 112;
+    lv2:symbol "mod3tooperator__op__3_";
+    lv2:name "Mod3ToOperator (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 113;
+    lv2:symbol "mod4tooperator__op__3_";
+    lv2:name "Mod4ToOperator (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 114;
+    lv2:symbol "mod5tooperator__op__3_";
+    lv2:name "Mod5ToOperator (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 115;
+    lv2:symbol "mod6tooperator__op__3_";
+    lv2:name "Mod6ToOperator (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 116;
+    lv2:symbol "mod7tooperator__op__3_";
+    lv2:name "Mod7ToOperator (Op #3)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 117;
+    lv2:symbol "amp__op__4_";
+    lv2:name "Amp (Op #4)";
+    lv2:minimum 0.005000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 118;
+    lv2:symbol "pan__op__4_";
+    lv2:name "Pan (Op #4)";
+    lv2:minimum -1.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 119;
+    lv2:symbol "freqmod__op__4_";
+    lv2:name "FreqMod (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 120;
+    lv2:symbol "freqoffset__op__4_";
+    lv2:name "FreqOffset (Op #4)";
+    lv2:minimum -128.000000;
+    lv2:maximum 128.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 121;
+    lv2:symbol "envelopetarget0__op__4_";
+    lv2:name "EnvelopeTarget0 (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 122;
+    lv2:symbol "envelopetarget1__op__4_";
+    lv2:name "EnvelopeTarget1 (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.500000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 123;
+    lv2:symbol "envelopetarget2__op__4_";
+    lv2:name "EnvelopeTarget2 (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.250000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 124;
+    lv2:symbol "envelopedelay0__op__4_";
+    lv2:name "EnvelopeDelay0 (Op #4)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 125;
+    lv2:symbol "envelopedelay1__op__4_";
+    lv2:name "EnvelopeDelay1 (Op #4)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 126;
+    lv2:symbol "envelopedelay2__op__4_";
+    lv2:name "EnvelopeDelay2 (Op #4)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.250000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 127;
+    lv2:symbol "envelopereleasetime__op__4_";
+    lv2:name "EnvelopeReleaseTime (Op #4)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.500000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 128;
+    lv2:symbol "keyboardscalingmidpoint__op__4_";
+    lv2:name "KeyboardScalingMidPoint (Op #4)";
+    lv2:minimum 50.000000;
+    lv2:maximum 5000.000000;
+    lv2:default 440.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 129;
+    lv2:symbol "keyboardscalinglowfactor__op__4_";
+    lv2:name "KeyboardScalingLowFactor (Op #4)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 130;
+    lv2:symbol "keyboardscalinghighfactor__op__4_";
+    lv2:name "KeyboardScalingHighFactor (Op #4)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 131;
+    lv2:symbol "velocitysensitivity__op__4_";
+    lv2:name "VelocitySensitivity (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 132;
+    lv2:symbol "modsensitivity__op__4_";
+    lv2:name "ModSensitivity (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 133;
+    lv2:symbol "lfoampdepth__op__4_";
+    lv2:name "LFOAmpDepth (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 134;
+    lv2:symbol "lfofreqmoddepth__op__4_";
+    lv2:name "LFOFreqModDepth (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 0.025000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 135;
+    lv2:symbol "enable__op__4_";
+    lv2:name "Enable (Op #4)";
+    lv2:minimum 0;
+    lv2:maximum 1;
+    lv2:default 1;
+    lv2:portProperty lv2:toggled;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 136;
+    lv2:symbol "carriers__op__4_";
+    lv2:name "Carriers (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 137;
+    lv2:symbol "mod0tooperator__op__4_";
+    lv2:name "Mod0ToOperator (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 138;
+    lv2:symbol "mod1tooperator__op__4_";
+    lv2:name "Mod1ToOperator (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 139;
+    lv2:symbol "mod2tooperator__op__4_";
+    lv2:name "Mod2ToOperator (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 140;
+    lv2:symbol "mod3tooperator__op__4_";
+    lv2:name "Mod3ToOperator (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 141;
+    lv2:symbol "mod4tooperator__op__4_";
+    lv2:name "Mod4ToOperator (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 142;
+    lv2:symbol "mod5tooperator__op__4_";
+    lv2:name "Mod5ToOperator (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 143;
+    lv2:symbol "mod6tooperator__op__4_";
+    lv2:name "Mod6ToOperator (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 144;
+    lv2:symbol "mod7tooperator__op__4_";
+    lv2:name "Mod7ToOperator (Op #4)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 145;
+    lv2:symbol "amp__op__5_";
+    lv2:name "Amp (Op #5)";
+    lv2:minimum 0.005000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 146;
+    lv2:symbol "pan__op__5_";
+    lv2:name "Pan (Op #5)";
+    lv2:minimum -1.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 147;
+    lv2:symbol "freqmod__op__5_";
+    lv2:name "FreqMod (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 148;
+    lv2:symbol "freqoffset__op__5_";
+    lv2:name "FreqOffset (Op #5)";
+    lv2:minimum -128.000000;
+    lv2:maximum 128.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 149;
+    lv2:symbol "envelopetarget0__op__5_";
+    lv2:name "EnvelopeTarget0 (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 150;
+    lv2:symbol "envelopetarget1__op__5_";
+    lv2:name "EnvelopeTarget1 (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.500000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 151;
+    lv2:symbol "envelopetarget2__op__5_";
+    lv2:name "EnvelopeTarget2 (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.250000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 152;
+    lv2:symbol "envelopedelay0__op__5_";
+    lv2:name "EnvelopeDelay0 (Op #5)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 153;
+    lv2:symbol "envelopedelay1__op__5_";
+    lv2:name "EnvelopeDelay1 (Op #5)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 154;
+    lv2:symbol "envelopedelay2__op__5_";
+    lv2:name "EnvelopeDelay2 (Op #5)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.250000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 155;
+    lv2:symbol "envelopereleasetime__op__5_";
+    lv2:name "EnvelopeReleaseTime (Op #5)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.500000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 156;
+    lv2:symbol "keyboardscalingmidpoint__op__5_";
+    lv2:name "KeyboardScalingMidPoint (Op #5)";
+    lv2:minimum 50.000000;
+    lv2:maximum 5000.000000;
+    lv2:default 440.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 157;
+    lv2:symbol "keyboardscalinglowfactor__op__5_";
+    lv2:name "KeyboardScalingLowFactor (Op #5)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 158;
+    lv2:symbol "keyboardscalinghighfactor__op__5_";
+    lv2:name "KeyboardScalingHighFactor (Op #5)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 159;
+    lv2:symbol "velocitysensitivity__op__5_";
+    lv2:name "VelocitySensitivity (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 160;
+    lv2:symbol "modsensitivity__op__5_";
+    lv2:name "ModSensitivity (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 161;
+    lv2:symbol "lfoampdepth__op__5_";
+    lv2:name "LFOAmpDepth (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 162;
+    lv2:symbol "lfofreqmoddepth__op__5_";
+    lv2:name "LFOFreqModDepth (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 0.025000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 163;
+    lv2:symbol "enable__op__5_";
+    lv2:name "Enable (Op #5)";
+    lv2:minimum 0;
+    lv2:maximum 1;
+    lv2:default 1;
+    lv2:portProperty lv2:toggled;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 164;
+    lv2:symbol "carriers__op__5_";
+    lv2:name "Carriers (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 165;
+    lv2:symbol "mod0tooperator__op__5_";
+    lv2:name "Mod0ToOperator (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 166;
+    lv2:symbol "mod1tooperator__op__5_";
+    lv2:name "Mod1ToOperator (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 167;
+    lv2:symbol "mod2tooperator__op__5_";
+    lv2:name "Mod2ToOperator (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 168;
+    lv2:symbol "mod3tooperator__op__5_";
+    lv2:name "Mod3ToOperator (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 169;
+    lv2:symbol "mod4tooperator__op__5_";
+    lv2:name "Mod4ToOperator (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 170;
+    lv2:symbol "mod5tooperator__op__5_";
+    lv2:name "Mod5ToOperator (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 171;
+    lv2:symbol "mod6tooperator__op__5_";
+    lv2:name "Mod6ToOperator (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 172;
+    lv2:symbol "mod7tooperator__op__5_";
+    lv2:name "Mod7ToOperator (Op #5)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 173;
+    lv2:symbol "amp__op__6_";
+    lv2:name "Amp (Op #6)";
+    lv2:minimum 0.005000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 174;
+    lv2:symbol "pan__op__6_";
+    lv2:name "Pan (Op #6)";
+    lv2:minimum -1.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 175;
+    lv2:symbol "freqmod__op__6_";
+    lv2:name "FreqMod (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 176;
+    lv2:symbol "freqoffset__op__6_";
+    lv2:name "FreqOffset (Op #6)";
+    lv2:minimum -128.000000;
+    lv2:maximum 128.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 177;
+    lv2:symbol "envelopetarget0__op__6_";
+    lv2:name "EnvelopeTarget0 (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 178;
+    lv2:symbol "envelopetarget1__op__6_";
+    lv2:name "EnvelopeTarget1 (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.500000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 179;
+    lv2:symbol "envelopetarget2__op__6_";
+    lv2:name "EnvelopeTarget2 (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.250000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 180;
+    lv2:symbol "envelopedelay0__op__6_";
+    lv2:name "EnvelopeDelay0 (Op #6)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 181;
+    lv2:symbol "envelopedelay1__op__6_";
+    lv2:name "EnvelopeDelay1 (Op #6)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 182;
+    lv2:symbol "envelopedelay2__op__6_";
+    lv2:name "EnvelopeDelay2 (Op #6)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.250000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 183;
+    lv2:symbol "envelopereleasetime__op__6_";
+    lv2:name "EnvelopeReleaseTime (Op #6)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.500000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 184;
+    lv2:symbol "keyboardscalingmidpoint__op__6_";
+    lv2:name "KeyboardScalingMidPoint (Op #6)";
+    lv2:minimum 50.000000;
+    lv2:maximum 5000.000000;
+    lv2:default 440.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 185;
+    lv2:symbol "keyboardscalinglowfactor__op__6_";
+    lv2:name "KeyboardScalingLowFactor (Op #6)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 186;
+    lv2:symbol "keyboardscalinghighfactor__op__6_";
+    lv2:name "KeyboardScalingHighFactor (Op #6)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 187;
+    lv2:symbol "velocitysensitivity__op__6_";
+    lv2:name "VelocitySensitivity (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 188;
+    lv2:symbol "modsensitivity__op__6_";
+    lv2:name "ModSensitivity (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 189;
+    lv2:symbol "lfoampdepth__op__6_";
+    lv2:name "LFOAmpDepth (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 190;
+    lv2:symbol "lfofreqmoddepth__op__6_";
+    lv2:name "LFOFreqModDepth (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 0.025000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 191;
+    lv2:symbol "enable__op__6_";
+    lv2:name "Enable (Op #6)";
+    lv2:minimum 0;
+    lv2:maximum 1;
+    lv2:default 1;
+    lv2:portProperty lv2:toggled;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 192;
+    lv2:symbol "carriers__op__6_";
+    lv2:name "Carriers (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 193;
+    lv2:symbol "mod0tooperator__op__6_";
+    lv2:name "Mod0ToOperator (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 194;
+    lv2:symbol "mod1tooperator__op__6_";
+    lv2:name "Mod1ToOperator (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 195;
+    lv2:symbol "mod2tooperator__op__6_";
+    lv2:name "Mod2ToOperator (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 196;
+    lv2:symbol "mod3tooperator__op__6_";
+    lv2:name "Mod3ToOperator (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 197;
+    lv2:symbol "mod4tooperator__op__6_";
+    lv2:name "Mod4ToOperator (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 198;
+    lv2:symbol "mod5tooperator__op__6_";
+    lv2:name "Mod5ToOperator (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 199;
+    lv2:symbol "mod6tooperator__op__6_";
+    lv2:name "Mod6ToOperator (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 200;
+    lv2:symbol "mod7tooperator__op__6_";
+    lv2:name "Mod7ToOperator (Op #6)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 201;
+    lv2:symbol "amp__op__7_";
+    lv2:name "Amp (Op #7)";
+    lv2:minimum 0.005000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 202;
+    lv2:symbol "pan__op__7_";
+    lv2:name "Pan (Op #7)";
+    lv2:minimum -1.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 203;
+    lv2:symbol "freqmod__op__7_";
+    lv2:name "FreqMod (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 16.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 204;
+    lv2:symbol "freqoffset__op__7_";
+    lv2:name "FreqOffset (Op #7)";
+    lv2:minimum -128.000000;
+    lv2:maximum 128.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 205;
+    lv2:symbol "envelopetarget0__op__7_";
+    lv2:name "EnvelopeTarget0 (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 206;
+    lv2:symbol "envelopetarget1__op__7_";
+    lv2:name "EnvelopeTarget1 (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.500000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 207;
+    lv2:symbol "envelopetarget2__op__7_";
+    lv2:name "EnvelopeTarget2 (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.250000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 208;
+    lv2:symbol "envelopedelay0__op__7_";
+    lv2:name "EnvelopeDelay0 (Op #7)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 209;
+    lv2:symbol "envelopedelay1__op__7_";
+    lv2:name "EnvelopeDelay1 (Op #7)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.050000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 210;
+    lv2:symbol "envelopedelay2__op__7_";
+    lv2:name "EnvelopeDelay2 (Op #7)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.250000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 211;
+    lv2:symbol "envelopereleasetime__op__7_";
+    lv2:name "EnvelopeReleaseTime (Op #7)";
+    lv2:minimum 0.005000;
+    lv2:maximum 8.000000;
+    lv2:default 0.500000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 212;
+    lv2:symbol "keyboardscalingmidpoint__op__7_";
+    lv2:name "KeyboardScalingMidPoint (Op #7)";
+    lv2:minimum 50.000000;
+    lv2:maximum 5000.000000;
+    lv2:default 440.000000;
+    lv2:portProperty epp:logarithmic;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 213;
+    lv2:symbol "keyboardscalinglowfactor__op__7_";
+    lv2:name "KeyboardScalingLowFactor (Op #7)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 214;
+    lv2:symbol "keyboardscalinghighfactor__op__7_";
+    lv2:name "KeyboardScalingHighFactor (Op #7)";
+    lv2:minimum -2.000000;
+    lv2:maximum 2.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 215;
+    lv2:symbol "velocitysensitivity__op__7_";
+    lv2:name "VelocitySensitivity (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 1.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 216;
+    lv2:symbol "modsensitivity__op__7_";
+    lv2:name "ModSensitivity (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 217;
+    lv2:symbol "lfoampdepth__op__7_";
+    lv2:name "LFOAmpDepth (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 218;
+    lv2:symbol "lfofreqmoddepth__op__7_";
+    lv2:name "LFOFreqModDepth (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 0.025000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 219;
+    lv2:symbol "enable__op__7_";
+    lv2:name "Enable (Op #7)";
+    lv2:minimum 0;
+    lv2:maximum 1;
+    lv2:default 1;
+    lv2:portProperty lv2:toggled;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 220;
+    lv2:symbol "carriers__op__7_";
+    lv2:name "Carriers (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 221;
+    lv2:symbol "mod0tooperator__op__7_";
+    lv2:name "Mod0ToOperator (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 222;
+    lv2:symbol "mod1tooperator__op__7_";
+    lv2:name "Mod1ToOperator (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 223;
+    lv2:symbol "mod2tooperator__op__7_";
+    lv2:name "Mod2ToOperator (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 224;
+    lv2:symbol "mod3tooperator__op__7_";
+    lv2:name "Mod3ToOperator (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 225;
+    lv2:symbol "mod4tooperator__op__7_";
+    lv2:name "Mod4ToOperator (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 226;
+    lv2:symbol "mod5tooperator__op__7_";
+    lv2:name "Mod5ToOperator (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 227;
+    lv2:symbol "mod6tooperator__op__7_";
+    lv2:name "Mod6ToOperator (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ],
+
+  [
+    a lv2:ControlPort, lv2:InputPort;
+    lv2:index 228;
+    lv2:symbol "mod7tooperator__op__7_";
+    lv2:name "Mod7ToOperator (Op #7)";
+    lv2:minimum 0.000000;
+    lv2:maximum 1.000000;
+    lv2:default 0.000000;
+  ].
+

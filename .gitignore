@@ -1,0 +1,9 @@
+*.d
+*.o
+*.a
+*.peg
+*.so
+/lv2/fmsynth.lv2
+/fmsynth_test
+/android/bin
+/android/gen
