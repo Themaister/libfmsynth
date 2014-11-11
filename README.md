@@ -18,6 +18,7 @@ The synth core supports:
   - Carrier stereo panning
   - Velocity sensitivity per operator
   - Mod wheel sensitivity per operator
+  - Pitch bend
   - Keyboard scaling
   - Sustain, sustained keys can overlap each other for a very rich sound
   - Full floating point implementation optimized for SIMD
