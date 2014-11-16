@@ -1,6 +1,3 @@
-Main Page {#mainpage}
-=============
-
 # libfmsynth
 
 libfmsynth is a C library which implements an FM synthesizer.
@@ -46,7 +43,7 @@ libfmsynth is licensed under the permissive MIT license.
 ## Documentation
 
 The public libfmsynth API is documented with doxygen. Run `doxygen` or `make docs` to generate documentation.
-Doxygen 1.8.2 is required.
+Doxygen 1.8.3 is required.
 
 ## Optimizations
 
