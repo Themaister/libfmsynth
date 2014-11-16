@@ -1,3 +1,6 @@
+Main Page {#mainpage}
+=============
+
 # libfmsynth
 
 libfmsynth is a C library which implements an FM synthesizer.
@@ -39,6 +42,11 @@ The sounds do have some effects like delay, reverb and chorus applied to them.
 ## License
 
 libfmsynth is licensed under the permissive MIT license.
+
+## Documentation
+
+The public libfmsynth API is documented with doxygen. Run `doxygen` or `make docs` to generate documentation.
+Doxygen 1.8.2 is required.
 
 ## Optimizations
 

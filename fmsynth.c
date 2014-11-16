@@ -556,56 +556,67 @@ void fmsynth_release_all(fmsynth_t *fm)
    }
 }
 
-void fmsynth_parse_midi(fmsynth_t *fm,
+fmsynth_status_t fmsynth_parse_midi(fmsynth_t *fm,
       const uint8_t *data, size_t size)
 {
    if (size == 3 && ((data[0] & 0xf0) == 0x90))
    {
       if (data[2] != 0)
       {
-         fmsynth_note_on(fm, data[1], data[2]);
+         return fmsynth_note_on(fm, data[1], data[2]);
       }
       else
       {
          fmsynth_note_off(fm, data[1]);
+         return FMSYNTH_STATUS_OK;
       }
    }
    else if (size == 3 && ((data[0] & 0xf0) == 0x80))
    {
       fmsynth_note_off(fm, data[1]);
+      return FMSYNTH_STATUS_OK;
    }
    else if (size == 3 && ((data[0] & 0xf0) == 0xb0 && data[1] == 64))
    {
       fmsynth_set_sustain(fm, data[2] >= 64);
+      return FMSYNTH_STATUS_OK;
    }
    else if (size == 3 && ((data[0] & 0xf0) == 0xb0 && data[1] == 1))
    {
       fmsynth_set_mod_wheel(fm, data[2]);
+      return FMSYNTH_STATUS_OK;
    }
    else if ((size == 1 && data[0] == 0xff) ||
          (size == 3 && ((data[0] & 0xf0) == 0xb0) && data[1] == 120))
    {
       // Reset, All Sound Off
       fmsynth_release_all(fm);
+      return FMSYNTH_STATUS_OK;
    }
    else if ((size == 3 && ((data[0] & 0xf0) == 0xb0) && data[1] == 123) ||
          (size == 1 && data[0] == 0xfc))
    {
       // All Notes Off, STOP
       fmsynth_release_all(fm);
+      return FMSYNTH_STATUS_OK;
    }
    else if (size == 3 && ((data[0] & 0xf0) == 0xe0))
    {
       // Pitch bend
       uint16_t bend = data[1] | (data[2] << 7);
       fmsynth_set_pitch_bend(fm, bend);
+      return FMSYNTH_STATUS_OK;
+   }
+   else
+   {
+      return FMSYNTH_STATUS_MESSAGE_UNKNOWN;
    }
 }
 
 void fmsynth_set_parameter(fmsynth_t *fm,
       unsigned parameter, unsigned operator_index, float value)
 {
-   if (parameter < FMSYNTH_PARAM_END)
+   if (parameter < FMSYNTH_PARAM_END && operator_index < FMSYNTH_OPERATORS)
    {
       float *param = fm->params.amp;
       param[parameter * FMSYNTH_OPERATORS + operator_index] = value;
@@ -935,6 +946,10 @@ fmsynth_status_t fmsynth_preset_load_private(struct fmsynth_global_parameters *g
    }
 
    return FMSYNTH_STATUS_OK;
+}
 
+unsigned fmsynth_get_version(void)
+{
+   return FMSYNTH_VERSION;
 }
 

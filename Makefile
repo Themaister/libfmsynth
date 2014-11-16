@@ -81,5 +81,8 @@ install:
 	install -m644 $(FMSYNTH_STATIC_LIB) $(PREFIX)/lib/
 	install -m644 fmsynth.h $(PREFIX)/include/
 
-.PHONY: clean install
+docs:
+	doxygen
+
+.PHONY: clean install docs
 
