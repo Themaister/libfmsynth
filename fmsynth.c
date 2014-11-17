@@ -858,7 +858,7 @@ fmsynth_status_t fmsynth_preset_save_private(struct fmsynth_global_parameters *g
    if (metadata)
    {
       memcpy(buffer, metadata->name, sizeof(metadata->name));
-      memcpy(buffer + sizeof(metadata->name), metadata->name, sizeof(metadata->author));
+      memcpy(buffer + sizeof(metadata->name), metadata->author, sizeof(metadata->author));
    }
    else
    {
