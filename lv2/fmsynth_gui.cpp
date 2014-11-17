@@ -26,6 +26,8 @@
 #include <string>
 #include <cmath>
 #include <vector>
+#include <stdexcept>
+
 #include <stdio.h>
 
 using namespace sigc;
@@ -315,7 +317,20 @@ class Presets : public Frame
          int status = dialog.run();
          if (status == RESPONSE_OK)
          {
-            load_preset_from(dialog.get_uri());
+            try
+            {
+               load_preset_from(dialog.get_uri());
+            }
+            catch (const std::exception& e)
+            {
+               MessageDialog error(e.what(), false, MESSAGE_ERROR);
+               error.run();
+            }
+            catch (const Glib::Error &e)
+            {
+               MessageDialog error(e.what(), false, MESSAGE_ERROR);
+               error.run();
+            }
          }
       }
 
@@ -332,7 +347,21 @@ class Presets : public Frame
          if (status == RESPONSE_OK)
          {
             auto name = dialog.get_filename();
-            save_preset_to(dialog.get_uri());
+
+            try
+            {
+               save_preset_to(dialog.get_uri());
+            }
+            catch (const std::exception& e)
+            {
+               MessageDialog error(e.what(), false, MESSAGE_ERROR);
+               error.run();
+            }
+            catch (const Glib::Error &e)
+            {
+               MessageDialog error(e.what(), false, MESSAGE_ERROR);
+               error.run();
+            }
          }
       }
 
@@ -340,11 +369,11 @@ class Presets : public Frame
       {
          auto file = Gio::File::create_for_uri(uri);
          if (!file)
-            return;
+            throw std::runtime_error("Failed to open file.");
 
          auto stream = file->read();
          if (!stream)
-            return;
+            throw std::runtime_error("Failed to open file.");
 
          std::vector<uint8_t> buffer(fmsynth_preset_size());
 
@@ -352,14 +381,14 @@ class Presets : public Frame
          bool ret = stream->read_all(buffer.data(), buffer.size(), did_read) && did_read == buffer.size();
          stream->close();
 
+         if (!ret)
+            throw std::runtime_error("Failed to read file.");
+
          struct fmsynth_voice_parameters params;
          struct fmsynth_global_parameters global_params;
-         if (ret)
-         {
-            fmsynth_status_t status = fmsynth_preset_load_private(&global_params, &params,
-                  nullptr, buffer.data(), buffer.size());
-            ret = status == FMSYNTH_STATUS_OK;
-         }
+         fmsynth_status_t status = fmsynth_preset_load_private(&global_params, &params,
+               nullptr, buffer.data(), buffer.size());
+         ret = status == FMSYNTH_STATUS_OK;
 
          if (ret)
          {
@@ -376,17 +405,19 @@ class Presets : public Frame
                }
             }
          }
+         else
+            throw std::runtime_error("Failed to parse preset.");
       }
 
       void save_preset_to(const Glib::ustring& uri)
       {
          auto file = Gio::File::create_for_uri(uri);
          if (!file)
-            return;
+            throw std::runtime_error("Failed to save preset.");
 
          auto stream = file->replace();
          if (!stream)
-            return;
+            throw std::runtime_error("Failed to save preset.");
 
          std::vector<uint8_t> buffer(fmsynth_preset_size());
 
@@ -410,13 +441,11 @@ class Presets : public Frame
                nullptr, buffer.data(), buffer.size());
 
          if (status != FMSYNTH_STATUS_OK)
-            return;
+            throw std::runtime_error("Failed to save preset to binary format.");
 
          gsize ret;
          if (!stream->write_all(buffer.data(), buffer.size(), ret) || ret != buffer.size())
-            return;
-
-         stream->close();
+            throw std::runtime_error("Failed to write preset to disk.");
       }
 
       void set_parameter(uint32_t id, float value)
