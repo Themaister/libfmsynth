@@ -420,6 +420,13 @@ class Presets : public Frame
 
          if (ret)
          {
+            Glib::ustring name_str(metadata.name);
+            Glib::ustring author_str(metadata.author);
+            if (!name_str.validate() || !author_str.validate())
+               throw std::logic_error("Preset string is not valid UTF-8.");
+            name.set_text(name_str);
+            author.set_text(author_str);
+
             const float *values = params.amp;
 
             set_parameter(peg_volume, global_params.volume);
@@ -432,9 +439,6 @@ class Presets : public Frame
                         values[p * FMSYNTH_OPERATORS + o]);
                }
             }
-
-            name.set_text(metadata.name);
-            author.set_text(metadata.author);
          }
          else
             throw std::runtime_error("Failed to parse preset.");
@@ -442,21 +446,18 @@ class Presets : public Frame
 
       static void put_raw_string(char *buffer, const Entry& entry)
       {
-         if (entry.get_text_length())
-         {
-            auto text = entry.get_text();
-            const char *str = text.c_str();
-            size_t len = strlen(str);
-            if (len >= FMSYNTH_PRESET_STRING_SIZE)
-            {
-               // TODO: Should find a better way to make this limit more intuitive.
-               throw std::logic_error("Preset string overflows buffer.");
-            }
+         auto text = entry.get_text();
+         size_t len = text.bytes();
 
-            // We've already verified, so memcpy is fine.
-            memcpy(buffer, str, len);
-            buffer[len] = '\0';
+         if (len >= FMSYNTH_PRESET_STRING_SIZE)
+         {
+            // TODO: Should find a better way to make this limit more intuitive.
+            throw std::logic_error("Preset string overflows buffer.");
          }
+
+         // We've already verified, so memcpy is fine.
+         memcpy(buffer, text.c_str(), len);
+         buffer[len] = '\0';
       }
 
       void save_preset_to(const Glib::ustring& uri)
