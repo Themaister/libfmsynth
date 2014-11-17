@@ -1,6 +1,25 @@
 
-CFLAGS += -std=c99 -Wall -Wextra -pedantic -fPIC -g
-ASFLAGS += -g
+ifeq ($(platform),)
+   platform = unix
+   ifeq ($(shell uname -a),)
+      platform = win
+   else ifneq ($(findstring MINGW,$(shell uname -a)),)
+      platform = win
+   else ifneq ($(findstring Darwin,$(shell uname -a)),)
+      platform = osx
+   else ifneq ($(findstring win,$(shell uname -a)),)
+      platform = win
+   endif
+endif
+
+ifeq ($(platform),win)
+   CC = gcc
+   EXE_SUFFIX := .exe
+else
+   FPIC := -fPIC
+endif
+
+CFLAGS += -std=c99 -Wall -Wextra -pedantic $(FPIC)
 LDFLAGS += -lm
 
 FMSYNTH_STATIC_LIB := libfmsynth.a
@@ -8,7 +27,7 @@ OBJDIR := obj
 FMSYNTH_C_SOURCES := fmsynth.c
 FMSYNTH_TEST_SOURCES := fmsynth_test.c
 FMSYNTH_TEST_OBJECTS := $(addprefix $(OBJDIR)/,$(FMSYNTH_TEST_SOURCES:.c=.o))
-FMSYNTH_TEST := fmsynth_test
+FMSYNTH_TEST := fmsynth_test$(EXE_SUFFIX)
 
 SIMD = 1
 PREFIX = /usr/local
@@ -46,7 +65,7 @@ ifeq ($(SIMD), 1)
 endif
 
 ifeq ($(DEBUG), 1)
-   CFLAGS += -O0
+   CFLAGS += -O0 -g
 else
    CFLAGS += -Ofast
 endif

@@ -37,6 +37,15 @@
 #define FMSYNTH_ALIGNED_CACHE FMSYNTH_ALIGNED(64)
 #define FMSYNTH_NOINLINE __attribute__((noinline))
 #define FMSYNTH_ASSUME_ALIGNED(x, align) __builtin_assume_aligned(x, align)
+#elif defined(_MSC_VER)
+#warning "Alignment macros not implemented yet for MSVC. SIMD will be disabled. Massive performance reduction expected."
+#undef __SSE__
+#undef __SSE_4_1__
+#undef __AVX__
+#define FMSYNTH_ALIGNED(x)
+#define FMSYNTH_ALIGNED_CACHE
+#define FMSYNTH_NOINLINE
+#define FMSYNTH_ASSUME_ALIGNED(x, align) x
 #else
 #define FMSYNTH_ALIGNED(x)
 #define FMSYNTH_ALIGNED_CACHE
