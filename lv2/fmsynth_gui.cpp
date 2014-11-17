@@ -351,6 +351,16 @@ class Presets : public Frame
          }
       }
 
+      static Glib::ustring fixup_suffix(const Glib::ustring& uri)
+      {
+         // Add .fmp extension automatically if not provided.
+         size_t len = uri.length();
+         if (len >= 4 && (uri.substr(len - 4) != ".fmp"))
+            return uri + ".fmp";
+         else
+            return uri;
+      }
+
       void save_preset()
       {
          FileChooserDialog dialog("Save Preset", FILE_CHOOSER_ACTION_SAVE);
@@ -363,11 +373,9 @@ class Presets : public Frame
          int status = dialog.run();
          if (status == RESPONSE_OK)
          {
-            auto name = dialog.get_filename();
-
             try
             {
-               save_preset_to(dialog.get_uri());
+               save_preset_to(fixup_suffix(dialog.get_uri()));
             }
             catch (const std::exception& e)
             {
