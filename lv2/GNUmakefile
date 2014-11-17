@@ -1,8 +1,14 @@
 BUNDLE := fmsynth.lv2
 INSTALL_DIR = /usr/lib/lv2
 
+OBJDIR := obj
 SOURCE := fmsynth_lv2.cpp
-OBJECTS := $(SOURCE:.cpp=.o)
+OBJECTS := $(addprefix $(OBJDIR)/,$(SOURCE:.cpp=.o))
+GUI_SOURCE := fmsynth_gui.cpp
+GUI_OBJECTS := $(addprefix $(OBJDIR)/,$(GUI_SOURCE:.cpp=.o))
+
+FMSYNTH_LIB := fmsynth.so
+FMSYNTH_GUI_LIB := fmsynth_gui.so
 
 PRESETS := ../presets
 
@@ -13,8 +19,6 @@ LV2_LIBS := $(shell pkg-config lvtk-plugin-1 --libs)
 
 LDFLAGS += -fPIC -Wl,-no-undefined -lm
 CXXFLAGS += -fPIC -std=c++11 -Wall -pedantic $(LV2_CFLAGS)
-
-HOST_CXX = $(CXX)
 
 ifeq ($(ARCH),)
    ARCH := $(shell uname -m)
@@ -32,33 +36,33 @@ endif
 
 all: $(BUNDLE)
 
-$(BUNDLE): manifest.ttl fmsynth.so fmsynth_gui.so
+$(BUNDLE): manifest.ttl $(FMSYNTH_LIB) $(FMSYNTH_GUI_LIB)
 	rm -rf $(BUNDLE)
 	mkdir $(BUNDLE)
-	install -m644 fmsynth.ttl manifest.ttl fmsynth.so fmsynth_gui.so $(BUNDLE)
+	install -m644 fmsynth.ttl manifest.ttl $(FMSYNTH_LIB) $(FMSYNTH_GUI_LIB) $(BUNDLE)
 	cp -r $(PRESETS) $(BUNDLE)
 
 fmsynth.peg: fmsynth.ttl
 	ttl2c $< $@
 
-fmsynth.so: $(OBJECTS) fmsynth_lib
+$(FMSYNTH_LIB): $(OBJECTS)
+	$(MAKE) -C ../
 	$(CXX) -o $@ $(OBJECTS) ../libfmsynth.a -shared $(LDFLAGS) $(LV2_LIBS)
 
-fmsynth_gui.so: fmsynth_gui.cpp fmsynth.peg fmsynth_lib
-	$(CXX) -o $@ fmsynth_gui.cpp ../libfmsynth.a -shared $(LDFLAGS) $(LV2_GUI_CFLAGS) $(CXXFLAGS) $(LV2_GUI_LIBS)
-
-fmsynth_lib:
+$(FMSYNTH_GUI_LIB): $(GUI_OBJECTS) fmsynth.peg
 	$(MAKE) -C ../
+	$(CXX) -o $@ $(GUI_OBJECTS) ../libfmsynth.a -shared $(LDFLAGS) $(CXXFLAGS) $(LV2_GUI_LIBS)
 
-%.o: %.cpp fmsynth.peg
-	$(CXX) -c -o $@ $< $(CXXFLAGS)
+$(OBJDIR)/%.o: %.cpp fmsynth.peg
+	@mkdir -p $(dir $@)
+	$(CXX) -c -o $@ $< $(CXXFLAGS) $(LV2_GUI_CFLAGS)
 
 install:
 	cp -r $(BUNDLE) $(INSTALL_DIR)
 
 clean:
-	rm -rf $(BUNDLE) fmsynth.so fmsynth_gui.so $(OBJECTS) *.peg
+	rm -rf $(BUNDLE) fmsynth.so fmsynth_gui.so $(OBJDIR) *.peg
 	$(MAKE) -C ../ clean
 
-.PHONY: clean benchmark fmsynth_lib
+.PHONY: clean benchmark
 
