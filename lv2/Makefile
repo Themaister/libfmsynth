@@ -4,6 +4,8 @@ INSTALL_DIR = /usr/lib/lv2
 SOURCE := fmsynth_lv2.cpp
 OBJECTS := $(SOURCE:.cpp=.o)
 
+PRESETS := ../presets
+
 LV2_GUI_CFLAGS := $(shell pkg-config --cflags lvtk-gtkui-1)
 LV2_GUI_LIBS := $(shell pkg-config --libs lvtk-gtkui-1)
 LV2_CFLAGS := $(shell pkg-config lvtk-plugin-1 --cflags)
@@ -34,6 +36,7 @@ $(BUNDLE): manifest.ttl fmsynth.so fmsynth_gui.so
 	rm -rf $(BUNDLE)
 	mkdir $(BUNDLE)
 	install -m644 fmsynth.ttl manifest.ttl fmsynth.so fmsynth_gui.so $(BUNDLE)
+	cp -r $(PRESETS) $(BUNDLE)
 
 fmsynth.peg: fmsynth.ttl
 	ttl2c $< $@
