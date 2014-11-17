@@ -3,6 +3,7 @@
 *.a
 *.peg
 *.so
+*.exe
 /lv2/fmsynth.lv2
 /fmsynth_test
 /android/bin
