@@ -30,11 +30,14 @@ In addition, support for some useful auxillary features are implemented:
   - Patch load/save as well as direct parameter control through API
   - MIDI messages API as well as direct control of the synth with key on/off, etc
 
-## Sample sounds
+## Sample sounds/presets
 
 Some of the sounds you can create using this synth can be heard on my [SoundCloud](https://soundcloud.com/zoned-music/sets/fm-synth) FM synth playlist.
 
 The sounds do have some effects like delay, reverb and chorus applied to them.
+
+Some presets can be found in `presets/` directory.
+Their raw data can be passed directly to libfmsynths preset API.
 
 ## License
 
@@ -115,15 +118,17 @@ To install library and header, use `make install PREFIX=$YOUR_PREFIX`.
 
 ### Building LV2 plugin
 
-To build libfmsynth as an LV2 plugin you need:
+To build libfmsynth as an LV2 plugin you will need:
 
-  - lvtk
-  - GTKmm 2
-  - Fairly recent C++11 compiler
+ - lvtk
+ - GTKmm 2
+ - Fairly recent C++11 compiler
 
+Run:
 
     cd lv2
     make
     sudo make install
     
 The plugin will be installed to `/usr/lib/lv2/`.
+Presets in `presets/` are installed to the bundle as well. When attempting to load presets in the UI, one of the shortcuts will point to the LV2 bundle for easy access.
