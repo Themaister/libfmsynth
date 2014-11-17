@@ -277,8 +277,12 @@ class Presets : public Frame
       Presets(const char *bundle_path, EventMap& events, ValueMap& values, std::function<void (uint32_t, float)> func)
          : Frame("Presets"), events(events), values(values), lv2_func(func), bundle_path(bundle_path)
       {
+         auto vbox = manage(new VBox);
          auto hbox = manage(new HBox);
          set_border_width(5);
+
+         auto table = manage(new Table(2, 2));
+         table->set_border_width(5);
 
          filter.set_name("FMSynth presets");
          filter.add_pattern("*.fmp");
@@ -290,9 +294,19 @@ class Presets : public Frame
          load->signal_clicked().connect([this] { load_preset(); });
          save->signal_clicked().connect([this] { save_preset(); });
 
+         table->attach(*manage(new Label("Preset Name:")), 0, 1, 0, 1);
+         table->attach(*manage(new Label("Preset Author:")), 1, 2, 0, 1);
+         table->attach(name, 0, 1, 1, 2);
+         table->attach(author, 1, 2, 1, 2);
+
+         name.set_size_request(50, -1);
+         author.set_size_request(50, -1);
+
          hbox->add(*load);
          hbox->add(*save);
-         add(*hbox);
+         vbox->add(*hbox);
+         vbox->add(*table);
+         add(*vbox);
       }
 
    private:
@@ -302,6 +316,9 @@ class Presets : public Frame
       ValueMap& values;
       std::function<void (uint32_t, float)> lv2_func;
       const char *bundle_path;
+
+      Entry name;
+      Entry author;
 
       void load_preset()
       {
@@ -386,8 +403,11 @@ class Presets : public Frame
 
          struct fmsynth_voice_parameters params;
          struct fmsynth_global_parameters global_params;
+         struct fmsynth_preset_metadata metadata;
+         memset(&metadata, 0, sizeof(metadata));
+
          fmsynth_status_t status = fmsynth_preset_load_private(&global_params, &params,
-               nullptr, buffer.data(), buffer.size());
+               &metadata, buffer.data(), buffer.size());
          ret = status == FMSYNTH_STATUS_OK;
 
          if (ret)
@@ -404,25 +424,44 @@ class Presets : public Frame
                         values[p * FMSYNTH_OPERATORS + o]);
                }
             }
+
+            name.set_text(metadata.name);
+            author.set_text(metadata.author);
          }
          else
             throw std::runtime_error("Failed to parse preset.");
       }
 
+      static void put_raw_string(char *buffer, const Entry& entry)
+      {
+         if (entry.get_text_length())
+         {
+            auto text = entry.get_text();
+            const char *str = text.c_str();
+            size_t len = strlen(str);
+            if (len >= FMSYNTH_PRESET_STRING_SIZE)
+            {
+               // TODO: Should find a better way to make this limit more intuitive.
+               throw std::logic_error("Preset string overflows buffer.");
+            }
+
+            // We've already verified, so memcpy is fine.
+            memcpy(buffer, str, len);
+            buffer[len] = '\0';
+         }
+      }
+
       void save_preset_to(const Glib::ustring& uri)
       {
-         auto file = Gio::File::create_for_uri(uri);
-         if (!file)
-            throw std::runtime_error("Failed to save preset.");
-
-         auto stream = file->replace();
-         if (!stream)
-            throw std::runtime_error("Failed to save preset.");
-
          std::vector<uint8_t> buffer(fmsynth_preset_size());
 
          struct fmsynth_voice_parameters params;
          struct fmsynth_global_parameters global_params;
+         struct fmsynth_preset_metadata metadata;
+         memset(&metadata, 0, sizeof(metadata));
+
+         put_raw_string(metadata.name, name);
+         put_raw_string(metadata.author, author);
 
          global_params.volume = get_parameter(peg_volume);
          global_params.lfo_freq = get_parameter(peg_lfofreq);
@@ -438,10 +477,18 @@ class Presets : public Frame
          }
 
          fmsynth_status_t status = fmsynth_preset_save_private(&global_params, &params,
-               nullptr, buffer.data(), buffer.size());
+               &metadata, buffer.data(), buffer.size());
 
          if (status != FMSYNTH_STATUS_OK)
             throw std::runtime_error("Failed to save preset to binary format.");
+
+         auto file = Gio::File::create_for_uri(uri);
+         if (!file)
+            throw std::runtime_error("Failed to save preset to disk.");
+
+         auto stream = file->replace();
+         if (!stream)
+            throw std::runtime_error("Failed to save preset to disk.");
 
          gsize ret;
          if (!stream->write_all(buffer.data(), buffer.size(), ret) || ret != buffer.size())
