@@ -179,6 +179,7 @@ void fmsynth_free(fmsynth_t *fm);
 /** \brief Set a parameter specific to an operator.
  *
  * If either parameter or operator_index is out of bounds, this functions is a no-op.
+ * Updated parameters will not generally be reflected in audio output until a new voice has started.
  *
  * @param fm Handle to an FM synth instance.
  * @param parameter Which parameter to modify. See \ref fmsynth_parameter for which parameters can be used.
@@ -191,6 +192,7 @@ void fmsynth_set_parameter(fmsynth_t *fm,
 /** \brief Set a parameter global to the FM synth.
  *
  * If parameter is out of bounds, this functions is a no-op.
+ * Updated parameters will not generally be reflected in audio output until a new voice has started.
  *
  * @param fm Handle to an FM synth instance.
  * @param parameter Which parameter to modify. See \ref fmsynth_global_parameter for which parameters can be used.
