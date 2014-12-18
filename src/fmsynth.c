@@ -563,6 +563,7 @@ void fmsynth_release_all(fmsynth_t *fm)
    {
       fmsynth_release_voice(&fm->voices[i]);
    }
+   fm->sustained = false;
 }
 
 fmsynth_status_t fmsynth_parse_midi(fmsynth_t *fm,

@@ -321,6 +321,7 @@ void fmsynth_set_pitch_bend(fmsynth_t *fm, uint16_t value);
 /** \brief Forcibly release all notes.
  *
  * All notes are released, even if sustain is activated.
+ * Sustain is also reset to unpressed state.
  *
  * @param fm Handle to an FM synth instance.
  */
