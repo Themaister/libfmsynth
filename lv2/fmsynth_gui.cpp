@@ -18,7 +18,7 @@
 
 #include <lvtk/gtkui.hpp>
 #include "fmsynth.peg"
-#include "../fmsynth_private.h"
+#include "fmsynth_private.h"
 
 #include <functional>
 #include <utility>

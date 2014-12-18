@@ -18,7 +18,7 @@ LV2_CFLAGS := $(shell pkg-config lvtk-plugin-1 --cflags)
 LV2_LIBS := $(shell pkg-config lvtk-plugin-1 --libs)
 
 LDFLAGS += -fPIC -Wl,-no-undefined -lm
-CXXFLAGS += -fPIC -std=c++11 -Wall -pedantic $(LV2_CFLAGS)
+CXXFLAGS += -fPIC -std=c++11 -Wall -pedantic $(LV2_CFLAGS) -I../include
 
 ifeq ($(ARCH),)
    ARCH := $(shell uname -m)

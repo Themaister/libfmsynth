@@ -19,13 +19,13 @@ else
    FPIC := -fPIC
 endif
 
-CFLAGS += -std=c99 -Wall -Wextra -pedantic $(FPIC)
+CFLAGS += -std=c99 -Wall -Wextra -pedantic $(FPIC) -Iinclude
 LDFLAGS += -lm
 
 FMSYNTH_STATIC_LIB := libfmsynth.a
 OBJDIR := obj
-FMSYNTH_C_SOURCES := fmsynth.c
-FMSYNTH_TEST_SOURCES := fmsynth_test.c
+FMSYNTH_C_SOURCES := src/fmsynth.c
+FMSYNTH_TEST_SOURCES := src/fmsynth_test.c
 FMSYNTH_TEST_OBJECTS := $(addprefix $(OBJDIR)/,$(FMSYNTH_TEST_SOURCES:.c=.o))
 FMSYNTH_TEST := fmsynth_test$(EXE_SUFFIX)
 
