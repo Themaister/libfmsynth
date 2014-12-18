@@ -99,7 +99,20 @@ struct FMSynth : public lvtk::Plugin<FMSynth, lvtk::URID<true>>
 
          if (ev->body.type == m_midi_type)
          {
-            fmsynth_parse_midi(fm, (const uint8_t*)LV2_ATOM_BODY(&ev->body), ev->body.size);
+            const uint8_t *body = (const uint8_t*)LV2_ATOM_BODY(&ev->body);
+            size_t size = ev->body.size;
+            fmsynth_parse_midi(fm, body, size);
+#if 0
+            if (fmsynth_parse_midi(fm, body, size) == FMSYNTH_STATUS_MESSAGE_UNKNOWN)
+            {
+               fprintf(stderr, "FM Synth: Unknown message: ");
+               for (size_t i = 0; i < size; i++)
+               {
+                  fprintf(stderr, "0x%02x ", body[i]);
+               }
+               fprintf(stderr, "\n");
+            }
+#endif
          }
       }
 

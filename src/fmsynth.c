@@ -617,6 +617,11 @@ fmsynth_status_t fmsynth_parse_midi(fmsynth_t *fm,
       fmsynth_set_pitch_bend(fm, bend);
       return FMSYNTH_STATUS_OK;
    }
+   else if (size == 1 && data[0] == 0xf8)
+   {
+      // Timing message, just ignore.
+      return FMSYNTH_STATUS_OK;
+   }
    else
    {
       return FMSYNTH_STATUS_MESSAGE_UNKNOWN;
