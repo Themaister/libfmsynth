@@ -39,7 +39,7 @@ endif
 ifneq ($(findstring armv7,$(ARCH)),)
    CFLAGS += -march=armv7-a -mfpu=neon -marm
    ASFLAGS += -mfpu=neon
-   FMSYNTH_ASM_SOURCES += arm/fmsynth_neon.S
+   FMSYNTH_ASM_SOURCES += src/arm/fmsynth_neon.S
 endif
 
 ifneq ($(TOOLCHAIN_PREFIX),)
