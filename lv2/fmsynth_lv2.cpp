@@ -100,8 +100,7 @@ struct FMSynth : public lvtk::Plugin<FMSynth, lvtk::URID<true>>
          if (ev->body.type == m_midi_type)
          {
             const uint8_t *body = (const uint8_t*)LV2_ATOM_BODY(&ev->body);
-            size_t size = ev->body.size;
-            fmsynth_parse_midi(fm, body, size);
+            fmsynth_parse_midi(fm, body);
 #if 0
             if (fmsynth_parse_midi(fm, body, size) == FMSYNTH_STATUS_MESSAGE_UNKNOWN)
             {
