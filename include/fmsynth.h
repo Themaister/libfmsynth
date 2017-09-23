@@ -135,7 +135,7 @@ typedef enum fmsynth_status
 /**
  * Current API version of libfmsynth.
  */
-#define FMSYNTH_VERSION 1
+#define FMSYNTH_VERSION 2
 
 /** \brief Returns current version of libfmsynth.
  *
@@ -332,12 +332,11 @@ void fmsynth_release_all(fmsynth_t *fm);
  * @param fm Handle to an FM synth instance.
  * @param midi_data Pointer to MIDI data. Message type must always be provided.
  *                  E.g. Successive "note on" messages cannot drop the first byte.
- * @param midi_size Size of MIDI message.
  *
  * @returns Status code. Depends on MIDI message type or \ref FMSYNTH_STATUS_MESSAGE_UNKNOWN if unknown MIDI message is provided.
  */
 fmsynth_status_t fmsynth_parse_midi(fmsynth_t *fm,
-      const uint8_t *midi_data, size_t midi_size);
+      const uint8_t *midi_data);
 /** @} */
 
 /** @} */
