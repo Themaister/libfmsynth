@@ -189,6 +189,17 @@ void fmsynth_free(fmsynth_t *fm);
 void fmsynth_set_parameter(fmsynth_t *fm,
       unsigned parameter, unsigned operator_index, float value);
 
+float fmsynth_get_parameter(fmsynth_t *fm,
+                            unsigned parameter, unsigned operator_index);
+
+float fmsynth_convert_from_normalized_parameter(fmsynth_t *fm,
+                                                unsigned parameter,
+                                                float value);
+
+float fmsynth_convert_to_normalized_parameter(fmsynth_t *fm,
+                                              unsigned parameter,
+                                              float value);
+
 /** \brief Set a parameter global to the FM synth.
  *
  * If parameter is out of bounds, this functions is a no-op.
@@ -200,6 +211,17 @@ void fmsynth_set_parameter(fmsynth_t *fm,
  */
 void fmsynth_set_global_parameter(fmsynth_t *fm,
       unsigned parameter, float value);
+
+float fmsynth_get_global_parameter(fmsynth_t *fm,
+                                   unsigned parameter);
+
+float fmsynth_convert_from_normalized_global_parameter(fmsynth_t *fm,
+                                                       unsigned parameter,
+                                                       float value);
+
+float fmsynth_convert_to_normalized_global_parameter(fmsynth_t *fm,
+                                                     unsigned parameter,
+                                                     float value);
 
 /**
  * Maximum string size for presets, including NUL-terminator.
