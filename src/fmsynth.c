@@ -628,6 +628,51 @@ fmsynth_status_t fmsynth_parse_midi(fmsynth_t *fm,
    }
 }
 
+struct fmsynth_parameter_data
+{
+    const char *name;
+    float minimum;
+    float maximum;
+    float default_value;
+    bool logarithmic;
+};
+
+static const struct fmsynth_parameter_data global_parameter_data[] = {
+    { "Amp", 0.0f, 1.0f, 0.2f, false },
+    { "LFO Freq", 0.1f, 64.0f, 0.1f, true },
+};
+
+static const struct fmsynth_parameter_data parameter_data[] = {
+    { "Volume", 0.005f, 16.0f, 1.0f, true },
+    { "Pan", -1.0f, 1.0f, 0.0f, false },
+    { "FreqMod", 0.0f, 16.0f, 1.0f, false },
+    { "FreqOffset", -128.0f, 128.0f, 0.0f, false },
+    { "Env T0", 0.0f, 1.0f, 1.0f, false },
+    { "Env T1", 0.0f, 1.0f, 0.5f, false },
+    { "Env T2", 0.0f, 1.0f, 0.25f, false },
+    { "Env D0", 0.005f, 8.0f, 0.05f, true },
+    { "Env D1", 0.005f, 8.0f, 0.05f, true },
+    { "Env D2", 0.005f, 8.0f, 0.25f, true },
+    { "Env Rel", 0.005f, 8.0f, 0.5f, true },
+    { "KeyScale Mid", 50.0f, 5000.0f, 440.0f, true },
+    { "KeyScale LoFactor", -2.0f, 2.0f, 0.0f, false },
+    { "KeyScale HiFactor", -2.0f, 2.0f, 0.0f, false },
+    { "Velocity Sensitivity", 0.0f, 1.0f, 1.0f, false },
+    { "ModWheel Sensitivity", 0.0f, 1.0f, 0.0f, false },
+    { "LFOAmpDepth", 0.0f, 1.0f, 0.0f, false },
+    { "LFOFreqDepth", 0.0f, 0.025f, 0.0f, false },
+    { "Enable", 0.0f, 1.0f, 1.0f, false },
+    { "Carrier", 0.0f, 1.0f, 1.0f, false },
+    { "Mod0ToOperator", 0.0f, 1.0f, 0.0f, false },
+    { "Mod1ToOperator", 0.0f, 1.0f, 0.0f, false },
+    { "Mod2ToOperator", 0.0f, 1.0f, 0.0f, false },
+    { "Mod3ToOperator", 0.0f, 1.0f, 0.0f, false },
+    { "Mod4ToOperator", 0.0f, 1.0f, 0.0f, false },
+    { "Mod5ToOperator", 0.0f, 1.0f, 0.0f, false },
+    { "Mod6ToOperator", 0.0f, 1.0f, 0.0f, false },
+    { "Mod7ToOperator", 0.0f, 1.0f, 0.0f, false },
+};
+
 void fmsynth_set_parameter(fmsynth_t *fm,
       unsigned parameter, unsigned operator_index, float value)
 {
@@ -638,6 +683,95 @@ void fmsynth_set_parameter(fmsynth_t *fm,
    }
 }
 
+static float convert_from_normalized(const struct fmsynth_parameter_data *data, float value)
+{
+   if (data->logarithmic)
+   {
+      float minlog = log2f(data->minimum);
+      float maxlog = log2f(data->maximum);
+      return exp2f(minlog * (1.0f - value) + maxlog * value);
+   }
+   else
+      return data->minimum * (1.0f - value) + data->maximum * value;
+}
+
+static float convert_to_normalized(const struct fmsynth_parameter_data *data, float value)
+{
+   if (data->logarithmic)
+   {
+      float minlog = log2f(data->minimum);
+      float maxlog = log2f(data->maximum);
+      float l = log2f(value);
+      return (l - minlog) / (maxlog - minlog);
+   }
+   else
+      return (value - data->minimum) / (data->maximum - data->minimum);
+}
+
+float fmsynth_convert_to_normalized_global_parameter(fmsynth_t *fm,
+                                                     unsigned parameter, float value)
+{
+   (void)fm;
+   if (parameter < FMSYNTH_GLOBAL_PARAM_END)
+   {
+      const struct fmsynth_parameter_data *data = &global_parameter_data[parameter];
+      return convert_to_normalized(data, value);
+   }
+   else
+      return 0.0f;
+}
+
+float fmsynth_convert_from_normalized_global_parameter(fmsynth_t *fm,
+                                                       unsigned parameter, float value)
+{
+   (void)fm;
+   if (parameter < FMSYNTH_GLOBAL_PARAM_END)
+   {
+      const struct fmsynth_parameter_data *data = &global_parameter_data[parameter];
+      return convert_from_normalized(data, value);
+   }
+   else
+      return 0.0f;
+}
+
+float fmsynth_convert_to_normalized_parameter(fmsynth_t *fm,
+                                              unsigned parameter, float value)
+{
+   (void)fm;
+   if (parameter < FMSYNTH_PARAM_END)
+   {
+      const struct fmsynth_parameter_data *data = &parameter_data[parameter];
+      return convert_to_normalized(data, value);
+   }
+   else
+      return 0.0f;
+}
+
+float fmsynth_convert_from_normalized_parameter(fmsynth_t *fm,
+                                                unsigned parameter, float value)
+{
+   (void)fm;
+   if (parameter < FMSYNTH_PARAM_END)
+   {
+      const struct fmsynth_parameter_data *data = &parameter_data[parameter];
+      return convert_from_normalized(data, value);
+   }
+   else
+      return 0.0f;
+}
+
+float fmsynth_get_parameter(fmsynth_t *fm,
+                            unsigned parameter, unsigned operator_index)
+{
+   if (parameter < FMSYNTH_PARAM_END && operator_index < FMSYNTH_OPERATORS)
+   {
+      float *param = fm->params.amp;
+      return param[parameter * FMSYNTH_OPERATORS + operator_index];
+   }
+   else
+      return 0.0f;
+}
+
 void fmsynth_set_global_parameter(fmsynth_t *fm,
       unsigned parameter, float value)
 {
@@ -646,6 +780,18 @@ void fmsynth_set_global_parameter(fmsynth_t *fm,
       float *param = &fm->global_params.volume;
       param[parameter] = value;
    }
+}
+
+float fmsynth_get_global_parameter(fmsynth_t *fm,
+                                   unsigned parameter)
+{
+   if (parameter < FMSYNTH_GLOBAL_PARAM_END)
+   {
+      float *param = &fm->global_params.volume;
+      return param[parameter];
+   }
+   else
+      return 0.0f;
 }
 
 static bool fmsynth_voice_update_active(struct fmsynth_voice *voice)
