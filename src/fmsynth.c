@@ -33,22 +33,24 @@
 #endif
 
 #ifdef __GNUC__
-#define FMSYNTH_ALIGNED(x) __attribute__((aligned(x)))
-#define FMSYNTH_ALIGNED_CACHE FMSYNTH_ALIGNED(64)
+#define FMSYNTH_ALIGNED_PRE(x)
+#define FMSYNTH_ALIGNED_CACHE_PRE
+#define FMSYNTH_ALIGNED_POST(x) __attribute__((aligned(x)))
+#define FMSYNTH_ALIGNED_CACHE_POST FMSYNTH_ALIGNED_POST(64)
 #define FMSYNTH_NOINLINE __attribute__((noinline))
 #define FMSYNTH_ASSUME_ALIGNED(x, align) __builtin_assume_aligned(x, align)
 #elif defined(_MSC_VER)
-#warning "Alignment macros not implemented yet for MSVC. SIMD will be disabled. Massive performance reduction expected."
-#undef __SSE__
-#undef __SSE_4_1__
-#undef __AVX__
-#define FMSYNTH_ALIGNED(x)
-#define FMSYNTH_ALIGNED_CACHE
-#define FMSYNTH_NOINLINE
+#define FMSYNTH_ALIGNED_PRE(x) __declspec(align(x))
+#define FMSYNTH_ALIGNED_CACHE_PRE FMSYNTH_ALIGNED_PRE(64)
+#define FMSYNTH_ALIGNED_POST(x)
+#define FMSYNTH_ALIGNED_CACHE_POST
+#define FMSYNTH_NOINLINE __declspec(noinline)
 #define FMSYNTH_ASSUME_ALIGNED(x, align) x
 #else
-#define FMSYNTH_ALIGNED(x)
-#define FMSYNTH_ALIGNED_CACHE
+#define FMSYNTH_ALIGNED_PRE(x)
+#define FMSYNTH_ALIGNED_CACHE_PRE
+#define FMSYNTH_ALIGNED_POST(x)
+#define FMSYNTH_ALIGNED_CACHE_POST
 #define FMSYNTH_NOINLINE
 #define FMSYNTH_ASSUME_ALIGNED(x, align) x
 #endif
@@ -87,7 +89,7 @@ struct fmsynth_voice
    unsigned count;
 
    // Used in process_frames(). Should be local in cache.
-   float phases[FMSYNTH_OPERATORS] FMSYNTH_ALIGNED_CACHE;
+   FMSYNTH_ALIGNED_CACHE_PRE float phases[FMSYNTH_OPERATORS] FMSYNTH_ALIGNED_CACHE_POST;
    float env[FMSYNTH_OPERATORS];
    float read_mod[FMSYNTH_OPERATORS];
    float target_env_step[FMSYNTH_OPERATORS];
@@ -112,8 +114,8 @@ struct fmsynth_voice
 
 struct fmsynth
 {
-   struct fmsynth_voice_parameters params FMSYNTH_ALIGNED_CACHE;
-   struct fmsynth_global_parameters global_params FMSYNTH_ALIGNED_CACHE;
+   FMSYNTH_ALIGNED_CACHE_PRE struct fmsynth_voice_parameters params FMSYNTH_ALIGNED_CACHE_POST;
+   FMSYNTH_ALIGNED_CACHE_PRE struct fmsynth_global_parameters global_params FMSYNTH_ALIGNED_CACHE_POST;
 
    float sample_rate;
    float inv_sample_rate;
@@ -123,7 +125,7 @@ struct fmsynth
    bool sustained;
 
    unsigned max_voices;
-   struct fmsynth_voice voices[] FMSYNTH_ALIGNED_CACHE;
+   FMSYNTH_ALIGNED_CACHE_PRE struct fmsynth_voice voices[] FMSYNTH_ALIGNED_CACHE_POST;
 };
 
 static void *fmsynth_memory_alloc(size_t alignment, size_t size)
