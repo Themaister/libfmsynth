@@ -98,7 +98,7 @@ install:
 	@mkdir -p $(PREFIX)/lib
 	@mkdir -p $(PREFIX)/include
 	install -m644 $(FMSYNTH_STATIC_LIB) $(PREFIX)/lib/
-	install -m644 fmsynth.h $(PREFIX)/include/
+	install -m644 include/fmsynth.h $(PREFIX)/include/
 
 docs:
 	doxygen
